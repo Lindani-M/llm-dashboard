@@ -89,25 +89,25 @@ jobs:
 
       # ── 4. Configure App Service settings ────────────────────────────────
       - name: Configure App Service settings
-        uses: azure/appservice-settings@v1
-        with:
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          resource-group-name: ${{ env.RG }}
-          app-settings-json: |
-            [
-              { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true", "slotSetting": false },
-              { "name": "ENABLE_ORYX_BUILD",              "value": "true", "slotSetting": false },
-              { "name": "WEBSITES_PORT",                  "value": "8000", "slotSetting": false },
-              { "name": "SP_TENANT_ID",       "value": "${{ secrets.SP_TENANT_ID }}",       "slotSetting": false },
-              { "name": "SP_CLIENT_ID",       "value": "${{ secrets.SP_CLIENT_ID }}",       "slotSetting": false },
-              { "name": "SP_CLIENT_SECRET",   "value": "${{ secrets.SP_CLIENT_SECRET }}",   "slotSetting": false },
-              { "name": "SP_FILE_SHARE_URL",  "value": "${{ secrets.SP_FILE_SHARE_URL }}",  "slotSetting": false },
-              { "name": "CLAUDE_ENDPOINT",    "value": "${{ secrets.CLAUDE_ENDPOINT }}",    "slotSetting": false },
-              { "name": "CLAUDE_API_KEY",     "value": "${{ secrets.CLAUDE_API_KEY }}",     "slotSetting": false },
-              { "name": "CLAUDE_DEPLOYMENT_NAME", "value": "${{ secrets.CLAUDE_DEPLOYMENT_NAME }}", "slotSetting": false },
-              { "name": "AZURE_STORAGE_CONNECTION_STRING", "value": "${{ env.STORAGE_CONN }}", "slotSetting": false },
-              { "name": "AZURE_STORAGE_CONTAINER", "value": "commentary", "slotSetting": false }
-            ]
+        run: |
+          az webapp config appsettings set \
+            --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
+            --resource-group "${{ env.RG }}" \
+            --settings \
+              SCM_DO_BUILD_DURING_DEPLOYMENT=false \
+              ENABLE_ORYX_BUILD=false \
+              WEBSITES_PORT=8000 \
+              PYTHONPATH="/home/site/wwwroot/.python_packages/lib/site-packages" \
+              SP_TENANT_ID="${{ secrets.SP_TENANT_ID }}" \
+              SP_CLIENT_ID="${{ secrets.SP_CLIENT_ID }}" \
+              SP_CLIENT_SECRET="${{ secrets.SP_CLIENT_SECRET }}" \
+              SP_FILE_SHARE_URL="${{ secrets.SP_FILE_SHARE_URL }}" \
+              CLAUDE_ENDPOINT="${{ secrets.CLAUDE_ENDPOINT }}" \
+              CLAUDE_API_KEY="${{ secrets.CLAUDE_API_KEY }}" \
+              CLAUDE_DEPLOYMENT_NAME="${{ secrets.CLAUDE_DEPLOYMENT_NAME }}" \
+              AZURE_STORAGE_CONNECTION_STRING="${{ env.STORAGE_CONN }}" \
+              AZURE_STORAGE_CONTAINER="commentary" \
+            --output none
 
       - name: Set startup command
         run: |
@@ -135,14 +135,25 @@ jobs:
           cp -r frontend/dist backend/static
 
       # ── 6. Package & Deploy ───────────────────────────────────────────────
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Pre-install packages into bundle
+        run: |
+          pip install -r backend/requirements.txt \
+            --target backend/.python_packages/lib/site-packages \
+            --no-cache-dir \
+            --quiet
+
       - name: Create deployment zip
         run: |
           cd backend
           zip -r ../deploy.zip . \
             --exclude "*.pyc" \
             --exclude "*__pycache__*" \
-            --exclude ".venv/*" \
-            --exclude ".python_packages/*"
+            --exclude ".venv/*"
 
       - name: Deploy to Azure App Service
         run: |
