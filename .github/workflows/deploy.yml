@@ -95,9 +95,9 @@ jobs:
           resource-group-name: ${{ env.RG }}
           app-settings-json: |
             [
-              { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true",  "slotSetting": false },
-              { "name": "ENABLE_ORYX_BUILD",              "value": "true",  "slotSetting": false },
-              { "name": "WEBSITES_PORT",                  "value": "8000",  "slotSetting": false },
+              { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true", "slotSetting": false },
+              { "name": "ENABLE_ORYX_BUILD",              "value": "true", "slotSetting": false },
+              { "name": "WEBSITES_PORT",                  "value": "8000", "slotSetting": false },
               { "name": "SP_TENANT_ID",       "value": "${{ secrets.SP_TENANT_ID }}",       "slotSetting": false },
               { "name": "SP_CLIENT_ID",       "value": "${{ secrets.SP_CLIENT_ID }}",       "slotSetting": false },
               { "name": "SP_CLIENT_SECRET",   "value": "${{ secrets.SP_CLIENT_SECRET }}",   "slotSetting": false },
@@ -141,7 +141,8 @@ jobs:
           zip -r ../deploy.zip . \
             --exclude "*.pyc" \
             --exclude "*__pycache__*" \
-            --exclude ".venv/*"
+            --exclude ".venv/*" \
+            --exclude ".python_packages/*"
 
       - name: Deploy to Azure App Service
         run: |
