@@ -92,9 +92,9 @@ export default function App() {
       <div className="dashboard-header">
         <div className="header-top">
           <div className="header-title">
-            <h1>Customer Churn Dashboard</h1>
+            <h1><EditableText sectionId="header_title" data={c('header_title')} onSave={handleSave} onRevert={handleRevert} /></h1>
             <div className="header-subtitle">
-              Retention Analytics &amp; Risk Assessment · Analysis Period 2026
+              <EditableText sectionId="header_subtitle" data={c('header_subtitle')} onSave={handleSave} onRevert={handleRevert} />
             </div>
           </div>
           <div className="header-actions">
@@ -123,7 +123,7 @@ export default function App() {
       {/* ── Main Content ── */}
       <div className="main-content">
 
-        <h2 className="section-title">Customer Churn — Portfolio Overview</h2>
+        <h2 className="section-title"><EditableText sectionId="section_title_overview" data={c('section_title_overview')} onSave={handleSave} onRevert={handleRevert} /></h2>
         <p className="section-subtitle">
           <EditableText
             sectionId="section_subtitle"
@@ -179,7 +179,7 @@ export default function App() {
         <div className="charts-row">
           {/* Geography */}
           <div className="chart-card">
-            <div className="chart-title">Churn by Geography (Cumulative)</div>
+            <div className="chart-title"><EditableText sectionId="chart_title_geography" data={c('chart_title_geography')} onSave={handleSave} onRevert={handleRevert} /></div>
             <div className="legend">
               <div className="legend-item"><div className="legend-dot navy" />Retained</div>
               <div className="legend-item"><div className="legend-dot gold" />Churned</div>
@@ -211,7 +211,7 @@ export default function App() {
 
           {/* Age */}
           <div className="chart-card">
-            <div className="chart-title">Churn by Age Group</div>
+            <div className="chart-title"><EditableText sectionId="chart_title_age" data={c('chart_title_age')} onSave={handleSave} onRevert={handleRevert} /></div>
             <div className="legend">
               <div className="legend-item"><div className="legend-dot navy" />Retained</div>
               <div className="legend-item"><div className="legend-dot gold" />Churned</div>
@@ -235,9 +235,9 @@ export default function App() {
         </div>
 
         {/* High-Risk Segments */}
-        <h2 className="status-header">High-Risk Segments</h2>
+        <h2 className="status-header"><EditableText sectionId="section_title_risk_segments" data={c('section_title_risk_segments')} onSave={handleSave} onRevert={handleRevert} /></h2>
         <p className="section-subtitle" style={{ marginTop: '4px' }}>
-          Deep-dive into the customer segments contributing most to attrition.
+          <EditableText sectionId="section_subtitle_risk" data={c('section_subtitle_risk')} onSave={handleSave} onRevert={handleRevert} />
         </p>
 
         <div className="grantee-cards">
@@ -344,7 +344,7 @@ export default function App() {
         <div className="charts-row">
           {/* Products */}
           <div className="chart-card">
-            <div className="chart-title">Churn by Number of Products</div>
+            <div className="chart-title"><EditableText sectionId="chart_title_products" data={c('chart_title_products')} onSave={handleSave} onRevert={handleRevert} /></div>
             <div className="bar-chart">
               {[1, 2, 3, 4].map((n) => {
                 const stat = products[String(n)];
@@ -372,7 +372,7 @@ export default function App() {
 
           {/* Gender */}
           <div className="chart-card">
-            <div className="chart-title">Churn by Gender</div>
+            <div className="chart-title"><EditableText sectionId="chart_title_gender" data={c('chart_title_gender')} onSave={handleSave} onRevert={handleRevert} /></div>
             <div className="legend">
               <div className="legend-item"><div className="legend-dot navy" />Retained</div>
               <div className="legend-item"><div className="legend-dot gold" />Churned</div>
@@ -409,7 +409,7 @@ export default function App() {
         <div className="charts-row">
           {/* Credit Score */}
           <div className="chart-card">
-            <div className="chart-title">Churn by Credit Score Band</div>
+            <div className="chart-title"><EditableText sectionId="chart_title_credit" data={c('chart_title_credit')} onSave={handleSave} onRevert={handleRevert} /></div>
             <div className="bar-chart">
               {Object.entries(credit_score).map(([band, stat]) => (
                 <div className="bar-row" key={band}>
@@ -426,7 +426,7 @@ export default function App() {
 
           {/* Activity + Balance */}
           <div className="chart-card">
-            <div className="chart-title">Churn by Activity &amp; Balance Status</div>
+            <div className="chart-title"><EditableText sectionId="chart_title_activity" data={c('chart_title_activity')} onSave={handleSave} onRevert={handleRevert} /></div>
             <div className="legend">
               <div className="legend-item"><div className="legend-dot navy" />Retained</div>
               <div className="legend-item"><div className="legend-dot gold" />Churned</div>
@@ -467,7 +467,7 @@ export default function App() {
         {/* Tenure Chart */}
         <div className="charts-row">
           <div className="chart-card full-width">
-            <div className="chart-title">Churn Rate by Tenure (Years with Bank)</div>
+            <div className="chart-title"><EditableText sectionId="chart_title_tenure" data={c('chart_title_tenure')} onSave={handleSave} onRevert={handleRevert} /></div>
             <div className="tenure-chart">
               {Object.entries(tenure).map(([yr, stat]) => {
                 const isMax = stat.churn_rate === maxTenureRate;
@@ -497,20 +497,20 @@ export default function App() {
         <div className="section-divider" />
 
         {/* Summary Table */}
-        <h2 className="status-header">Churn Status Summary</h2>
+        <h2 className="status-header"><EditableText sectionId="table_title" data={c('table_title')} onSave={handleSave} onRevert={handleRevert} /></h2>
         <p className="section-subtitle" style={{ marginTop: '4px' }}>
-          Consolidated view of churn rates across all segmentation dimensions.
+          <EditableText sectionId="table_subtitle" data={c('table_subtitle')} onSave={handleSave} onRevert={handleRevert} />
         </p>
         <div className="chart-card" style={{ marginBottom: '36px', padding: 0, overflow: 'hidden' }}>
           <table className="data-table">
             <thead>
               <tr>
-                <th>Segment</th>
-                <th>Category</th>
-                <th>Total Customers</th>
-                <th>Churned</th>
-                <th>Churn Rate</th>
-                <th>Risk Level</th>
+                <th><EditableText sectionId="table_col_segment" data={c('table_col_segment')} onSave={handleSave} onRevert={handleRevert} /></th>
+                <th><EditableText sectionId="table_col_category" data={c('table_col_category')} onSave={handleSave} onRevert={handleRevert} /></th>
+                <th><EditableText sectionId="table_col_total" data={c('table_col_total')} onSave={handleSave} onRevert={handleRevert} /></th>
+                <th><EditableText sectionId="table_col_churned" data={c('table_col_churned')} onSave={handleSave} onRevert={handleRevert} /></th>
+                <th><EditableText sectionId="table_col_churn_rate" data={c('table_col_churn_rate')} onSave={handleSave} onRevert={handleRevert} /></th>
+                <th><EditableText sectionId="table_col_risk" data={c('table_col_risk')} onSave={handleSave} onRevert={handleRevert} /></th>
               </tr>
             </thead>
             <tbody>

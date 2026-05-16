@@ -462,7 +462,9 @@ body {
   border-color: var(--gold);
   color: var(--gold);
 }
-.grantee-body:hover .commentary-edit-btn {
+/* Reveal edit affordances on any hover within a grantee card */
+.grantee-card:hover .commentary-edit-btn,
+.grantee-card:hover .editable-text-icon {
   opacity: 1;
 }
 
@@ -520,10 +522,63 @@ body {
 
 /* grantee card h3 title editable treatment */
 .grantee-card h3 .editable-text-wrap {
-  color: var(--gold);
+  color: var(--white);
 }
 .grantee-card h3 .editable-text-input {
   color: var(--navy);
+  background: var(--white);
+}
+
+/* table header editable treatment */
+.data-table th .editable-text-wrap {
+  cursor: pointer;
+}
+.data-table th .editable-text-icon {
+  color: var(--gold);
+}
+.data-table th .editable-text-input {
+  color: var(--navy);
+  background: var(--white);
+  font-size: 11px;
+  text-transform: none;
+  letter-spacing: 0;
+  padding: 4px 6px;
+}
+.data-table th:hover .editable-text-icon {
+  opacity: 1;
+}
+.data-table th .editable-text-editing {
+  display: block;
+}
+.data-table th .editable-text-actions {
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* header area editable treatment */
+.header-title h1 .editable-text-icon,
+.header-subtitle .editable-text-icon {
+  color: var(--gold);
+  opacity: 0;
+}
+.header-title h1:hover .editable-text-icon,
+.header-subtitle:hover .editable-text-icon {
+  opacity: 1;
+}
+.header-title h1 .editable-text-input {
+  color: var(--navy);
+  background: rgba(255,255,255,0.15);
+  border-color: var(--gold);
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+}
+.header-subtitle .editable-text-input {
+  color: var(--navy);
+  background: rgba(255,255,255,0.15);
+  border-color: var(--gold);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 /* ── Table ── */

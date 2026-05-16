@@ -117,5 +117,145 @@
     "is_user_override_active": false,
     "last_data_refresh": "2026-05-16T10:01:48.262470+00:00",
     "last_override_at": null
+  },
+  "header_title": {
+    "ai_generated_content": "Customer Churn Dashboard",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433476+00:00",
+    "last_override_at": null
+  },
+  "header_subtitle": {
+    "ai_generated_content": "Retention Analytics & Risk Assessment \u00b7 Analysis Period 2026",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433681+00:00",
+    "last_override_at": null
+  },
+  "section_title_overview": {
+    "ai_generated_content": "Customer Churn \u2014 Portfolio Overview",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433684+00:00",
+    "last_override_at": null
+  },
+  "section_title_risk_segments": {
+    "ai_generated_content": "High-Risk Segments",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433686+00:00",
+    "last_override_at": null
+  },
+  "section_subtitle_risk": {
+    "ai_generated_content": "Deep-dive into the customer segments contributing most to attrition.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433688+00:00",
+    "last_override_at": null
+  },
+  "chart_title_geography": {
+    "ai_generated_content": "Churn by Geography (Cumulative)",
+    "user_overridden_content": "Churn by Geography Numbers",
+    "is_user_override_active": true,
+    "last_data_refresh": "2026-05-16T10:14:00.433690+00:00",
+    "last_override_at": "2026-05-16T10:16:25.659648+00:00"
+  },
+  "chart_title_age": {
+    "ai_generated_content": "Churn by Age Group",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433692+00:00",
+    "last_override_at": null
+  },
+  "chart_title_products": {
+    "ai_generated_content": "Churn by Number of Products",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433694+00:00",
+    "last_override_at": null
+  },
+  "chart_title_gender": {
+    "ai_generated_content": "Churn by Gender",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433696+00:00",
+    "last_override_at": null
+  },
+  "chart_title_credit": {
+    "ai_generated_content": "Churn by Credit Score Band",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433698+00:00",
+    "last_override_at": null
+  },
+  "chart_title_activity": {
+    "ai_generated_content": "Churn by Activity & Balance Status",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433700+00:00",
+    "last_override_at": null
+  },
+  "chart_title_tenure": {
+    "ai_generated_content": "Churn Rate by Tenure (Years with Bank)",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433702+00:00",
+    "last_override_at": null
+  },
+  "table_title": {
+    "ai_generated_content": "Churn Status Summary",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433704+00:00",
+    "last_override_at": null
+  },
+  "table_subtitle": {
+    "ai_generated_content": "Consolidated view of churn rates across all segmentation dimensions.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433706+00:00",
+    "last_override_at": null
+  },
+  "table_col_segment": {
+    "ai_generated_content": "Segment",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433708+00:00",
+    "last_override_at": null
+  },
+  "table_col_category": {
+    "ai_generated_content": "Category",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433710+00:00",
+    "last_override_at": null
+  },
+  "table_col_total": {
+    "ai_generated_content": "Total Customers",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433711+00:00",
+    "last_override_at": null
+  },
+  "table_col_churned": {
+    "ai_generated_content": "Churned",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433713+00:00",
+    "last_override_at": null
+  },
+  "table_col_churn_rate": {
+    "ai_generated_content": "Churn Rate",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433715+00:00",
+    "last_override_at": null
+  },
+  "table_col_risk": {
+    "ai_generated_content": "Risk Level",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:14:00.433717+00:00",
+    "last_override_at": null
   }
 }

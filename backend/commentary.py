@@ -20,11 +20,35 @@ SECTION_IDS = [
     "activity_balance_insight",
     "tenure_insight",
     "strategic_recommendations",
-    # Editable labels (user-only, no AI regeneration)
+    # Editable labels — grantee card titles
     "grantee_title_inactive",
     "grantee_title_multiproduct",
     "grantee_title_female",
     "grantee_title_germany",
+    # Editable labels — header
+    "header_title",
+    "header_subtitle",
+    # Editable labels — section headings
+    "section_title_overview",
+    "section_title_risk_segments",
+    "section_subtitle_risk",
+    # Editable labels — chart titles
+    "chart_title_geography",
+    "chart_title_age",
+    "chart_title_products",
+    "chart_title_gender",
+    "chart_title_credit",
+    "chart_title_activity",
+    "chart_title_tenure",
+    # Editable labels — table
+    "table_title",
+    "table_subtitle",
+    "table_col_segment",
+    "table_col_category",
+    "table_col_total",
+    "table_col_churned",
+    "table_col_churn_rate",
+    "table_col_risk",
 ]
 
 # Seeded from the original HTML dashboard — shown immediately on first launch
@@ -104,6 +128,30 @@ DEFAULT_COMMENTARY = {
     "grantee_title_multiproduct": "Multi-Product Holders (3+)",
     "grantee_title_female": "Female Customers",
     "grantee_title_germany": "Germany Region",
+    # Header labels
+    "header_title": "Customer Churn Dashboard",
+    "header_subtitle": "Retention Analytics & Risk Assessment \u00b7 Analysis Period 2026",
+    # Section heading labels
+    "section_title_overview": "Customer Churn \u2014 Portfolio Overview",
+    "section_title_risk_segments": "High-Risk Segments",
+    "section_subtitle_risk": "Deep-dive into the customer segments contributing most to attrition.",
+    # Chart title labels
+    "chart_title_geography": "Churn by Geography (Cumulative)",
+    "chart_title_age": "Churn by Age Group",
+    "chart_title_products": "Churn by Number of Products",
+    "chart_title_gender": "Churn by Gender",
+    "chart_title_credit": "Churn by Credit Score Band",
+    "chart_title_activity": "Churn by Activity & Balance Status",
+    "chart_title_tenure": "Churn Rate by Tenure (Years with Bank)",
+    # Table labels
+    "table_title": "Churn Status Summary",
+    "table_subtitle": "Consolidated view of churn rates across all segmentation dimensions.",
+    "table_col_segment": "Segment",
+    "table_col_category": "Category",
+    "table_col_total": "Total Customers",
+    "table_col_churned": "Churned",
+    "table_col_churn_rate": "Churn Rate",
+    "table_col_risk": "Risk Level",
 }
 
 
@@ -117,6 +165,26 @@ _STATIC_SECTIONS = {
     "grantee_title_multiproduct",
     "grantee_title_female",
     "grantee_title_germany",
+    "header_title",
+    "header_subtitle",
+    "section_title_overview",
+    "section_title_risk_segments",
+    "section_subtitle_risk",
+    "chart_title_geography",
+    "chart_title_age",
+    "chart_title_products",
+    "chart_title_gender",
+    "chart_title_credit",
+    "chart_title_activity",
+    "chart_title_tenure",
+    "table_title",
+    "table_subtitle",
+    "table_col_segment",
+    "table_col_category",
+    "table_col_total",
+    "table_col_churned",
+    "table_col_churn_rate",
+    "table_col_risk",
 }
 
 
