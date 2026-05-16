@@ -141,10 +141,10 @@
   },
   "section_title_risk_segments": {
     "ai_generated_content": "High-Risk Segments",
-    "user_overridden_content": null,
-    "is_user_override_active": false,
+    "user_overridden_content": "High-Risk Segments",
+    "is_user_override_active": true,
     "last_data_refresh": "2026-05-16T10:14:00.433686+00:00",
-    "last_override_at": null
+    "last_override_at": "2026-05-16T10:22:06.500919+00:00"
   },
   "section_subtitle_risk": {
     "ai_generated_content": "Deep-dive into the customer segments contributing most to attrition.",
@@ -156,7 +156,7 @@
   "chart_title_geography": {
     "ai_generated_content": "Churn by Geography (Cumulative)",
     "user_overridden_content": "Churn by Geography Numbers",
-    "is_user_override_active": true,
+    "is_user_override_active": false,
     "last_data_refresh": "2026-05-16T10:14:00.433690+00:00",
     "last_override_at": "2026-05-16T10:16:25.659648+00:00"
   },

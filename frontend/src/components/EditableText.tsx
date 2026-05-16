@@ -95,13 +95,11 @@ export default function EditableText({
 
   return (
     <span
-      className={`editable-text-wrap${data.is_user_override_active ? ' is-overridden' : ''}${className ? ` ${className}` : ''}`}
+      className={`editable-text-wrap${className ? ` ${className}` : ''}`}
       style={style}
-      onClick={startEdit}
-      title="Click to edit"
     >
       {data.active_content}
-      <span className="editable-text-icon">✎</span>
+      <button className="commentary-edit-btn editable-edit-btn" onClick={startEdit}>Edit</button>
     </span>
   );
 }

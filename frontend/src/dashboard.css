@@ -464,37 +464,25 @@ body {
 }
 /* Reveal edit affordances on any hover within a grantee card */
 .grantee-card:hover .commentary-edit-btn,
-.grantee-card:hover .editable-text-icon {
+.grantee-card:hover .editable-edit-btn {
   opacity: 1;
 }
 
 /* ── EditableText (inline click-to-edit for titles & subtitles) ── */
 .editable-text-wrap {
-  cursor: pointer;
   position: relative;
   display: inline;
 }
-.editable-text-icon {
+.editable-edit-btn {
+  position: static;
   display: inline-block;
-  margin-left: 6px;
-  font-size: 13px;
-  color: var(--gold);
+  margin-left: 8px;
   opacity: 0;
-  transition: opacity 0.15s;
-  user-select: none;
-}
-.editable-text-wrap:hover .editable-text-icon {
-  opacity: 1;
-}
-.editable-text-wrap.is-overridden::after {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: var(--amber);
-  border-radius: 50%;
-  margin-left: 6px;
   vertical-align: middle;
+  transition: opacity 0.2s;
+}
+.editable-text-wrap:hover .editable-edit-btn {
+  opacity: 1;
 }
 .editable-text-editing {
   display: inline-flex;
@@ -544,7 +532,7 @@ body {
   letter-spacing: 0;
   padding: 4px 6px;
 }
-.data-table th:hover .editable-text-icon {
+.data-table th:hover .editable-edit-btn {
   opacity: 1;
 }
 .data-table th .editable-text-editing {
@@ -555,14 +543,15 @@ body {
   gap: 4px;
 }
 
-/* header area editable treatment */
-.header-title h1 .editable-text-icon,
-.header-subtitle .editable-text-icon {
-  color: var(--gold);
+/* header area editable treatment — gold border + white text on navy bg */
+.header-title h1 .editable-edit-btn,
+.header-subtitle .editable-edit-btn {
   opacity: 0;
+  border-color: var(--gold);
+  color: var(--white);
 }
-.header-title h1:hover .editable-text-icon,
-.header-subtitle:hover .editable-text-icon {
+.header-title h1:hover .editable-edit-btn,
+.header-subtitle:hover .editable-edit-btn {
   opacity: 1;
 }
 .header-title h1 .editable-text-input {
