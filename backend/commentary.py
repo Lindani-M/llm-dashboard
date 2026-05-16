@@ -23,7 +23,8 @@ _container_client = None  # cached after first successful init
 def _blob_client():
     """Return an Azure BlobClient. Container is created at most once per process."""
     global _container_client
-    from azure.storage.blob import BlobServiceClient, ResourceExistsError  # type: ignore
+    from azure.storage.blob import BlobServiceClient  # type: ignore
+    from azure.core.exceptions import ResourceExistsError  # type: ignore
     if _container_client is None:
         service = BlobServiceClient.from_connection_string(_BLOB_CONN_STR)
         container = service.get_container_client(_BLOB_CONTAINER)
