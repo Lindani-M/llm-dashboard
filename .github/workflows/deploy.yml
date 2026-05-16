@@ -101,6 +101,7 @@ jobs:
             --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
             --resource-group "${{ env.RG }}" \
             --settings \
+              SCM_DO_BUILD_DURING_DEPLOYMENT=true \
               SP_TENANT_ID="${{ secrets.SP_TENANT_ID }}" \
               SP_CLIENT_ID="${{ secrets.SP_CLIENT_ID }}" \
               SP_CLIENT_SECRET="${{ secrets.SP_CLIENT_SECRET }}" \
@@ -130,14 +131,6 @@ jobs:
           cp -r frontend/dist backend/static
 
       # ── 5. Package & Deploy ───────────────────────────────────────────────
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Python dependencies
-        run: pip install -r backend/requirements.txt
-
       - name: Create deployment zip
         run: |
           cd backend
