@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -9,6 +10,8 @@ CLAUDE_ENDPOINT = os.getenv("CLAUDE_ENDPOINT", "").rstrip("/")
 CLAUDE_API_KEY = os.getenv("CLAUDE_API_KEY")
 CLAUDE_DEPLOYMENT_NAME = os.getenv("CLAUDE_DEPLOYMENT_NAME", "claude-sonnet-4-6")
 
+logger = logging.getLogger("dashboard.ai_client")
+
 
 def generate_commentary(prompt: str) -> str:
     """Call Azure AI Foundry (Claude Sonnet 4.6) to generate commentary."""
@@ -18,7 +21,7 @@ def generate_commentary(prompt: str) -> str:
     )
     message = client.messages.create(
         model=CLAUDE_DEPLOYMENT_NAME,
-        max_tokens=8000,
+        max_tokens=500,
         messages=[{"role": "user", "content": prompt}],
     )
     return message.content[0].text

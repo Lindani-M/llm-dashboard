@@ -1,17 +1,32 @@
-from fastapi import FastAPI, HTTPException, Body
+import logging
+from fastapi import FastAPI, HTTPException, Body, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import commentary as c
 import metrics as m
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger("dashboard.api")
 
 app = FastAPI(title="Churn Dashboard API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error("Unhandled error on %s %s: %s", request.method, request.url.path, exc, exc_info=True)
+    return JSONResponse(status_code=500, content={"error": "An internal error occurred. Please try again."})
 
 
 @app.get("/api/health")
@@ -22,37 +37,65 @@ def health():
 @app.get("/api/metrics")
 def get_metrics():
     try:
-        return m.compute_metrics()
+        logger.info("Computing metrics from data source")
+        result = m.compute_metrics()
+        logger.info("Metrics computed successfully")
+        return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error("Failed to compute metrics: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to load dashboard data. Please try again.")
 
 
 @app.get("/api/commentary")
 def get_commentary():
-    return c.get_all_commentary()
+    try:
+        return c.get_all_commentary()
+    except Exception as e:
+        logger.error("Failed to load commentary: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to load commentary. Please try again.")
 
 
 @app.put("/api/commentary/{section_id}")
 def update_commentary(section_id: str, body: dict = Body(...)):
     content = body.get("content", "")
     try:
-        return c.save_user_override(section_id, content)
+        result = c.save_user_override(section_id, content)
+        logger.info("User edited section '%s' (%d chars)", section_id, len(content))
+        return result
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        logger.warning("Edit rejected for unknown section '%s'", section_id)
+        raise HTTPException(status_code=404, detail="Section not found.")
+    except Exception as e:
+        logger.error("Failed to save override for '%s': %s", section_id, e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to save your edit. Please try again.")
 
 
 @app.delete("/api/commentary/{section_id}/override")
 def revert_commentary(section_id: str):
     try:
-        return c.clear_user_override(section_id)
+        result = c.clear_user_override(section_id)
+        logger.info("User reverted section '%s' to AI content", section_id)
+        return result
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        logger.warning("Revert rejected for unknown section '%s'", section_id)
+        raise HTTPException(status_code=404, detail="Section not found.")
+    except Exception as e:
+        logger.error("Failed to revert '%s': %s", section_id, e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to revert. Please try again.")
 
 
 @app.post("/api/refresh")
 def refresh_data():
-    """Re-read Excel + regenerate AI commentary (skips user overrides)."""
+    """Re-read data source + regenerate AI commentary (skips user overrides)."""
+    logger.info("Data refresh requested — recomputing metrics and regenerating AI commentary")
     try:
-        return c.regenerate_all(skip_overridden=True)
+        result = c.regenerate_all(skip_overridden=True)
+        error_count = len(result.get("errors", []))
+        if error_count:
+            logger.warning("Refresh completed with %d AI section error(s)", error_count)
+        else:
+            logger.info("Refresh completed successfully — all sections updated")
+        return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error("Refresh failed: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Data refresh failed. Please try again.")

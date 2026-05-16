@@ -1,8 +1,11 @@
 import json
+import logging
 from datetime import datetime, timezone
 from pathlib import Path
 from metrics import compute_metrics
 from ai_client import generate_commentary
+
+logger = logging.getLogger("dashboard.commentary")
 
 STORE_PATH = Path(__file__).parent / "commentary_store.json"
 
@@ -407,26 +410,36 @@ def _build_prompt(section_id: str, m: dict) -> str | None:
 
 
 def regenerate_all(skip_overridden: bool = True) -> dict:
-    """Re-read Excel, recompute metrics, regenerate AI commentary for non-overridden sections."""
+    """Re-read data source, recompute metrics, regenerate AI commentary for non-overridden sections."""
     metrics = compute_metrics()
     store = load_store()
     now = _now()
     errors = []
 
-    for sid in SECTION_IDS:
-        if skip_overridden and store.get(sid, {}).get("is_user_override_active"):
-            continue
+    ai_sections = [
+        sid for sid in SECTION_IDS
+        if not (skip_overridden and store.get(sid, {}).get("is_user_override_active"))
+        and _build_prompt(sid, metrics) is not None
+    ]
+    logger.info("Starting AI regeneration for %d section(s)", len(ai_sections))
+
+    for sid in ai_sections:
         prompt = _build_prompt(sid, metrics)
-        if prompt is None:
-            continue  # Static label — skip AI generation
         try:
+            logger.info("Regenerating section '%s'", sid)
             content = generate_commentary(prompt)
             store[sid]["ai_generated_content"] = content
             store[sid]["last_data_refresh"] = now
+            logger.info("Section '%s' regenerated successfully", sid)
         except Exception as e:
-            errors.append(f"{sid}: {str(e)}")
+            logger.error("Failed to regenerate section '%s': %s", sid, e, exc_info=True)
+            errors.append(sid)
 
     _save_store(store)
+    if errors:
+        logger.warning("Regeneration finished — %d section(s) failed: %s", len(errors), errors)
+    else:
+        logger.info("All sections regenerated successfully")
     return {
         "commentary": _with_active(store),
         "metrics": metrics,
