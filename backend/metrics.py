@@ -32,6 +32,7 @@ def _get_graph_token() -> str:
         _SP_CLIENT_ID,
         authority=authority,
         client_credential=_SP_CLIENT_SECRET,
+        azure_region=False,  # disable region auto-detection (suppress warning)
     )
     result = app.acquire_token_for_client(scopes=_GRAPH_SCOPE)
     if "access_token" not in result:

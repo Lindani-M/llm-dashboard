@@ -17,19 +17,22 @@ _BLOB_CONN_STR = os.getenv("AZURE_STORAGE_CONNECTION_STRING", "")
 _BLOB_CONTAINER = os.getenv("AZURE_STORAGE_CONTAINER", "commentary")
 _BLOB_NAME = "commentary_store.json"
 
+_container_client = None  # cached after first successful init
+
 
 def _blob_client():
-    """Return an Azure BlobClient. Import is deferred so missing package
-    doesn't break local dev where azure-storage-blob is not installed."""
-    from azure.storage.blob import BlobServiceClient  # type: ignore
-    service = BlobServiceClient.from_connection_string(_BLOB_CONN_STR)
-    container = service.get_container_client(_BLOB_CONTAINER)
-    # Create container on first use (idempotent)
-    try:
-        container.create_container()
-    except Exception:
-        pass  # already exists
-    return container.get_blob_client(_BLOB_NAME)
+    """Return an Azure BlobClient. Container is created at most once per process."""
+    global _container_client
+    from azure.storage.blob import BlobServiceClient, ResourceExistsError  # type: ignore
+    if _container_client is None:
+        service = BlobServiceClient.from_connection_string(_BLOB_CONN_STR)
+        container = service.get_container_client(_BLOB_CONTAINER)
+        try:
+            container.create_container()
+        except ResourceExistsError:
+            pass  # already exists — normal on every restart after first deploy
+        _container_client = container
+    return _container_client.get_blob_client(_BLOB_NAME)
 
 
 def _load_from_blob() -> dict | None:

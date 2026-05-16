@@ -151,4 +151,4 @@ jobs:
             --resource-group "${{ env.RG }}" \
             --src-path deploy.zip \
             --type zip \
-            --async false
+            --async true
