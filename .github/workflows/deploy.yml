@@ -3,12 +3,13 @@ name: Provision & Deploy to Azure
 on:
   push:
     branches: [main]
-  workflow_dispatch:   # allow manual trigger from GitHub UI
+  workflow_dispatch:
 
 env:
   AZURE_REGION: southafricanorth
   RG: ai-rg
   AZURE_SUBSCRIPTION_ID: 6421aba4-c9b5-4354-bf2a-ef86b1623d21
+  PYTHON_VERSION: '3.11'
 
 jobs:
   provision-and-deploy:
@@ -19,9 +20,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ── 2. Azure Login (uses existing SharePoint SP) ─────────────────────
-      # The SP must have Contributor role on the subscription — grant once in
-      # Azure Portal → Subscriptions → Access control (IAM) → Add role assignment
+      # ── 2. Azure Login ────────────────────────────────────────────────────
       - name: Azure Login
         uses: azure/login@v2
         with:
@@ -31,10 +30,9 @@ jobs:
              "subscriptionId":"${{ env.AZURE_SUBSCRIPTION_ID }}",
              "tenantId":"${{ secrets.SP_TENANT_ID }}"}
 
-      # ── 3. Infrastructure (all steps are idempotent) ─────────────────────
+      # ── 3. Infrastructure (idempotent) ────────────────────────────────────
       - name: Create Storage Account
         run: |
-          # Storage account names: max 24 chars, lowercase alphanumeric only
           STORAGE=$(echo "${{ secrets.AZURE_WEBAPP_NAME }}" \
             | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]' | cut -c1-20)st
           echo "STORAGE_ACCOUNT=$STORAGE" >> $GITHUB_ENV
@@ -89,31 +87,37 @@ jobs:
               --output none
           fi
 
-      - name: Configure Web App settings
+      # ── 4. Configure App Service settings ────────────────────────────────
+      - name: Configure App Service settings
+        uses: azure/appservice-settings@v1
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          resource-group-name: ${{ env.RG }}
+          app-settings-json: |
+            [
+              { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true",  "slotSetting": false },
+              { "name": "ENABLE_ORYX_BUILD",              "value": "true",  "slotSetting": false },
+              { "name": "WEBSITES_PORT",                  "value": "8000",  "slotSetting": false },
+              { "name": "SP_TENANT_ID",       "value": "${{ secrets.SP_TENANT_ID }}",       "slotSetting": false },
+              { "name": "SP_CLIENT_ID",       "value": "${{ secrets.SP_CLIENT_ID }}",       "slotSetting": false },
+              { "name": "SP_CLIENT_SECRET",   "value": "${{ secrets.SP_CLIENT_SECRET }}",   "slotSetting": false },
+              { "name": "SP_FILE_SHARE_URL",  "value": "${{ secrets.SP_FILE_SHARE_URL }}",  "slotSetting": false },
+              { "name": "CLAUDE_ENDPOINT",    "value": "${{ secrets.CLAUDE_ENDPOINT }}",    "slotSetting": false },
+              { "name": "CLAUDE_API_KEY",     "value": "${{ secrets.CLAUDE_API_KEY }}",     "slotSetting": false },
+              { "name": "CLAUDE_DEPLOYMENT_NAME", "value": "${{ secrets.CLAUDE_DEPLOYMENT_NAME }}", "slotSetting": false },
+              { "name": "AZURE_STORAGE_CONNECTION_STRING", "value": "${{ env.STORAGE_CONN }}", "slotSetting": false },
+              { "name": "AZURE_STORAGE_CONTAINER", "value": "commentary", "slotSetting": false }
+            ]
+
+      - name: Set startup command
         run: |
           az webapp config set \
             --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
             --resource-group "${{ env.RG }}" \
-            --startup-file "uvicorn main:app --host 0.0.0.0 --port 8000" \
+            --startup-file "python -m uvicorn main:app --host 0.0.0.0 --port 8000" \
             --output none
 
-          az webapp config appsettings set \
-            --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
-            --resource-group "${{ env.RG }}" \
-            --settings \
-              SCM_DO_BUILD_DURING_DEPLOYMENT=true \
-              SP_TENANT_ID="${{ secrets.SP_TENANT_ID }}" \
-              SP_CLIENT_ID="${{ secrets.SP_CLIENT_ID }}" \
-              SP_CLIENT_SECRET="${{ secrets.SP_CLIENT_SECRET }}" \
-              SP_FILE_SHARE_URL="${{ secrets.SP_FILE_SHARE_URL }}" \
-              CLAUDE_ENDPOINT="${{ secrets.CLAUDE_ENDPOINT }}" \
-              CLAUDE_API_KEY="${{ secrets.CLAUDE_API_KEY }}" \
-              CLAUDE_DEPLOYMENT_NAME="${{ secrets.CLAUDE_DEPLOYMENT_NAME }}" \
-              AZURE_STORAGE_CONNECTION_STRING="${{ env.STORAGE_CONN }}" \
-              AZURE_STORAGE_CONTAINER="commentary" \
-            --output none
-
-      # ── 4. Build React frontend ───────────────────────────────────────────
+      # ── 5. Build React frontend ───────────────────────────────────────────
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -130,14 +134,20 @@ jobs:
           rm -rf backend/static
           cp -r frontend/dist backend/static
 
-      # ── 5. Package & Deploy ───────────────────────────────────────────────
+      # ── 6. Package & Deploy ───────────────────────────────────────────────
       - name: Create deployment zip
         run: |
           cd backend
-          zip -r ../deploy.zip . -x "*.pyc" -x "__pycache__/*" -x ".venv/*"
+          zip -r ../deploy.zip . \
+            --exclude "*.pyc" \
+            --exclude "*__pycache__*" \
+            --exclude ".venv/*"
 
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          package: deploy.zip
+      - name: Deploy to Azure App Service
+        run: |
+          az webapp deploy \
+            --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
+            --resource-group "${{ env.RG }}" \
+            --src-path deploy.zip \
+            --type zip \
+            --async false
