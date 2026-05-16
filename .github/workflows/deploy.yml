@@ -96,10 +96,6 @@ jobs:
           fi
 
       # ── 4. Create ACR (idempotent) ────────────────────────────────────────
-      - name: Register ContainerRegistry provider
-        run: |
-          az provider register --namespace Microsoft.ContainerRegistry --wait
-
       - name: Create Container Registry
         run: |
           ACR=$(echo "${{ secrets.AZURE_WEBAPP_NAME }}" \
