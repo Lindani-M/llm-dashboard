@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 from metrics import compute_metrics
@@ -8,6 +9,49 @@ from ai_client import generate_commentary
 logger = logging.getLogger("dashboard.commentary")
 
 STORE_PATH = Path(__file__).parent / "commentary_store.json"
+
+# ── Azure Blob Storage (production persistence) ──────────────────────────────
+# Set AZURE_STORAGE_CONNECTION_STRING and AZURE_STORAGE_CONTAINER in App Service
+# application settings. When absent the local JSON file is used (dev mode).
+_BLOB_CONN_STR = os.getenv("AZURE_STORAGE_CONNECTION_STRING", "")
+_BLOB_CONTAINER = os.getenv("AZURE_STORAGE_CONTAINER", "commentary")
+_BLOB_NAME = "commentary_store.json"
+
+
+def _blob_client():
+    """Return an Azure BlobClient. Import is deferred so missing package
+    doesn't break local dev where azure-storage-blob is not installed."""
+    from azure.storage.blob import BlobServiceClient  # type: ignore
+    service = BlobServiceClient.from_connection_string(_BLOB_CONN_STR)
+    container = service.get_container_client(_BLOB_CONTAINER)
+    # Create container on first use (idempotent)
+    try:
+        container.create_container()
+    except Exception:
+        pass  # already exists
+    return container.get_blob_client(_BLOB_NAME)
+
+
+def _load_from_blob() -> dict | None:
+    """Download and parse the store from Blob Storage. Returns None if not found."""
+    try:
+        data = _blob_client().download_blob().readall()
+        logger.info("Commentary store loaded from Blob Storage (%d bytes)", len(data))
+        return json.loads(data)
+    except Exception as e:
+        # BlobNotFound on first deploy is expected
+        if "BlobNotFound" in str(e) or "404" in str(e):
+            logger.info("No commentary blob found — will initialise with defaults")
+            return None
+        logger.error("Failed to load store from Blob Storage: %s", e, exc_info=True)
+        return None
+
+
+def _save_to_blob(store: dict) -> None:
+    """Upload the store dict as JSON to Blob Storage."""
+    data = json.dumps(store, indent=2).encode()
+    _blob_client().upload_blob(data, overwrite=True)
+    logger.info("Commentary store saved to Blob Storage (%d bytes)", len(data))
 
 SECTION_IDS = [
     "executive_summary",
@@ -192,41 +236,52 @@ _STATIC_SECTIONS = {
 
 
 def load_store() -> dict:
-    if STORE_PATH.exists():
-        with open(STORE_PATH) as f:
-            store = json.load(f)
-        # Add any new sections introduced after the store was first created
-        changed = False
-        for sid in SECTION_IDS:
-            if sid not in store:
-                store[sid] = {
-                    "ai_generated_content": DEFAULT_COMMENTARY.get(sid, ""),
-                    "user_overridden_content": None,
-                    "is_user_override_active": False,
-                    "last_data_refresh": _now(),
-                    "last_override_at": None,
-                }
-                changed = True
-        if changed:
-            _save_store(store)
-        return store
-    store = {
-        sid: {
-            "ai_generated_content": DEFAULT_COMMENTARY.get(sid, ""),
-            "user_overridden_content": None,
-            "is_user_override_active": False,
-            "last_data_refresh": _now(),
-            "last_override_at": None,
+    # Use Blob Storage in production, local file in dev
+    if _BLOB_CONN_STR:
+        store = _load_from_blob()
+    else:
+        store = None
+        if STORE_PATH.exists():
+            with open(STORE_PATH) as f:
+                store = json.load(f)
+
+    if store is None:
+        store = {
+            sid: {
+                "ai_generated_content": DEFAULT_COMMENTARY.get(sid, ""),
+                "user_overridden_content": None,
+                "is_user_override_active": False,
+                "last_data_refresh": _now(),
+                "last_override_at": None,
+            }
+            for sid in SECTION_IDS
         }
-        for sid in SECTION_IDS
-    }
-    _save_store(store)
+        _save_store(store)
+        return store
+
+    # Migrate: add any sections added after initial store creation
+    changed = False
+    for sid in SECTION_IDS:
+        if sid not in store:
+            store[sid] = {
+                "ai_generated_content": DEFAULT_COMMENTARY.get(sid, ""),
+                "user_overridden_content": None,
+                "is_user_override_active": False,
+                "last_data_refresh": _now(),
+                "last_override_at": None,
+            }
+            changed = True
+    if changed:
+        _save_store(store)
     return store
 
 
 def _save_store(store: dict) -> None:
-    with open(STORE_PATH, "w") as f:
-        json.dump(store, f, indent=2)
+    if _BLOB_CONN_STR:
+        _save_to_blob(store)
+    else:
+        with open(STORE_PATH, "w") as f:
+            json.dump(store, f, indent=2)
 
 
 def _with_active(store: dict) -> dict:

@@ -1,8 +1,11 @@
 import logging
+import os
 from datetime import datetime, timezone
+from pathlib import Path
 from fastapi import FastAPI, HTTPException, Body, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 import commentary as c
 import metrics as m
 
@@ -15,9 +18,17 @@ logger = logging.getLogger("dashboard.api")
 
 app = FastAPI(title="Churn Dashboard API")
 
+# In production FastAPI serves the built frontend directly — no CORS needed.
+# Dev origins are kept so `npm run dev` still works against the local backend.
+_dev_origins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "http://localhost:3000",
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:3000"],
+    allow_origins=_dev_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -138,3 +149,17 @@ def refresh_data():
     except Exception as e:
         logger.error("Refresh failed: %s", e, exc_info=True)
         raise HTTPException(status_code=500, detail="Data refresh failed. Please try again.")
+
+
+# ── Static frontend (production) ─────────────────────────────────────────────
+# The GitHub Actions workflow builds the React app into backend/static/.
+# In dev the Vite dev server handles the frontend; this block is harmless.
+_static_dir = Path(__file__).parent / "static"
+if _static_dir.exists():
+    app.mount("/assets", StaticFiles(directory=str(_static_dir / "assets")), name="assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    def serve_spa(full_path: str):
+        """Serve index.html for any non-API path so React Router works."""
+        index = _static_dir / "index.html"
+        return FileResponse(str(index))

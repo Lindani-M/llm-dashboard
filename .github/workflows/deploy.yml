@@ -1,0 +1,150 @@
+name: Provision & Deploy to Azure
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:   # allow manual trigger from GitHub UI
+
+env:
+  AZURE_REGION: southafricanorth
+  RG: ai-rg
+  AZURE_SUBSCRIPTION_ID: 6421aba4-c9b5-4354-bf2a-ef86b1623d21
+
+jobs:
+  provision-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Azure Login (uses existing SharePoint SP) ─────────────────────
+      # The SP must have Contributor role on the subscription — grant once in
+      # Azure Portal → Subscriptions → Access control (IAM) → Add role assignment
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: >-
+            {"clientId":"${{ secrets.SP_CLIENT_ID }}",
+             "clientSecret":"${{ secrets.SP_CLIENT_SECRET }}",
+             "subscriptionId":"${{ env.AZURE_SUBSCRIPTION_ID }}",
+             "tenantId":"${{ secrets.SP_TENANT_ID }}"}
+
+      # ── 3. Infrastructure (all steps are idempotent) ─────────────────────
+      - name: Create Storage Account
+        run: |
+          # Storage account names: max 24 chars, lowercase alphanumeric only
+          STORAGE=$(echo "${{ secrets.AZURE_WEBAPP_NAME }}" \
+            | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]' | cut -c1-20)st
+          echo "STORAGE_ACCOUNT=$STORAGE" >> $GITHUB_ENV
+          az storage account create \
+            --name "$STORAGE" \
+            --resource-group "${{ env.RG }}" \
+            --sku Standard_LRS \
+            --allow-blob-public-access false \
+            --output none
+
+      - name: Get storage connection string
+        run: |
+          CONN=$(az storage account show-connection-string \
+            --name "${{ env.STORAGE_ACCOUNT }}" \
+            --resource-group "${{ env.RG }}" \
+            --query connectionString -o tsv)
+          echo "::add-mask::$CONN"
+          echo "STORAGE_CONN=$CONN" >> $GITHUB_ENV
+
+      - name: Create commentary blob container
+        run: |
+          az storage container create \
+            --name commentary \
+            --connection-string "${{ env.STORAGE_CONN }}" \
+            --output none
+
+      - name: Create App Service Plan
+        run: |
+          if ! az appservice plan show \
+               --name "${{ secrets.AZURE_WEBAPP_NAME }}-plan" \
+               --resource-group "${{ env.RG }}" \
+               --output none 2>/dev/null; then
+            az appservice plan create \
+              --name "${{ secrets.AZURE_WEBAPP_NAME }}-plan" \
+              --resource-group "${{ env.RG }}" \
+              --sku B1 \
+              --is-linux \
+              --output none
+          fi
+
+      - name: Create Web App
+        run: |
+          if ! az webapp show \
+               --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
+               --resource-group "${{ env.RG }}" \
+               --output none 2>/dev/null; then
+            az webapp create \
+              --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
+              --resource-group "${{ env.RG }}" \
+              --plan "${{ secrets.AZURE_WEBAPP_NAME }}-plan" \
+              --runtime "PYTHON|3.11" \
+              --output none
+          fi
+
+      - name: Configure Web App settings
+        run: |
+          az webapp config set \
+            --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
+            --resource-group "${{ env.RG }}" \
+            --startup-file "uvicorn main:app --host 0.0.0.0 --port 8000" \
+            --output none
+
+          az webapp config appsettings set \
+            --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
+            --resource-group "${{ env.RG }}" \
+            --settings \
+              SP_TENANT_ID="${{ secrets.SP_TENANT_ID }}" \
+              SP_CLIENT_ID="${{ secrets.SP_CLIENT_ID }}" \
+              SP_CLIENT_SECRET="${{ secrets.SP_CLIENT_SECRET }}" \
+              SP_FILE_SHARE_URL="${{ secrets.SP_FILE_SHARE_URL }}" \
+              CLAUDE_ENDPOINT="${{ secrets.CLAUDE_ENDPOINT }}" \
+              CLAUDE_API_KEY="${{ secrets.CLAUDE_API_KEY }}" \
+              CLAUDE_DEPLOYMENT_NAME="${{ secrets.CLAUDE_DEPLOYMENT_NAME }}" \
+              AZURE_STORAGE_CONNECTION_STRING="${{ env.STORAGE_CONN }}" \
+              AZURE_STORAGE_CONTAINER="commentary" \
+            --output none
+
+      # ── 4. Build React frontend ───────────────────────────────────────────
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build frontend
+        run: npm ci && npm run build
+        working-directory: frontend
+
+      - name: Copy build into backend/static
+        run: |
+          rm -rf backend/static
+          cp -r frontend/dist backend/static
+
+      # ── 5. Package & Deploy ───────────────────────────────────────────────
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Create deployment zip
+        run: |
+          cd backend
+          zip -r ../deploy.zip . -x "*.pyc" -x "__pycache__/*" -x ".venv/*"
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          package: deploy.zip

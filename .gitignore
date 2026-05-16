@@ -45,3 +45,9 @@ Dockerfile
 /dist/
 node_modules/
 dist/
+
+# Frontend build output copied into backend at deploy time — not committed
+backend/static/
+
+# Deployment artefact
+deploy.zip

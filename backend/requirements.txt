@@ -5,3 +5,6 @@ openpyxl
 python-dotenv
 httpx
 anthropic
+msal
+requests
+azure-storage-blob
