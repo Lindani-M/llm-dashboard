@@ -49,8 +49,12 @@ export default function App() {
       const result = await refreshData();
       setMetrics(result.metrics);
       setCommentary(result.commentary);
-      const errMsg = result.errors.length > 0 ? ` (${result.errors.length} AI error(s))` : '';
-      setRefreshMsg(`Updated ${new Date().toLocaleTimeString()}${errMsg}`);
+      const now = new Date();
+      const timestamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      if (result.errors.length > 0) {
+        console.error('AI regeneration errors:', result.errors);
+      }
+      setRefreshMsg(`Updated ${timestamp}${result.errors.length > 0 ? ' (some AI sections skipped — see console)' : ''}`);
     } catch (e: unknown) {
       setRefreshMsg('Refresh failed — check backend');
     } finally {
@@ -103,12 +107,6 @@ export default function App() {
                 {refreshing ? 'Refreshing…' : '↻ Refresh Data'}
               </button>
               {refreshMsg && <div className="refresh-status">{refreshMsg}</div>}
-            </div>
-            <div className="brand">
-              Acme <span>&amp;</span> Trust<br />
-              <span style={{ fontSize: '11px', letterSpacing: '2px', fontFamily: 'Source Sans Pro, sans-serif', fontStyle: 'normal' }}>
-                BANKING GROUP
-              </span>
             </div>
           </div>
         </div>
