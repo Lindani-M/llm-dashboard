@@ -1,7 +1,7 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import './dashboard.css';
 import { Metrics, Commentary, CommentarySection } from './types';
-import { fetchMetrics, fetchCommentary, saveCommentary, revertCommentary, refreshData } from './api';
+import { fetchMetrics, fetchCommentary, saveCommentary, revertCommentary, refreshData, checkDataStatus } from './api';
 import CommentaryBox from './components/CommentaryBox';
 import EditableText from './components/EditableText';
 
@@ -24,12 +24,41 @@ export default function App() {
   const [refreshing, setRefreshing] = useState(false);
   const [refreshMsg, setRefreshMsg] = useState('');
   const [error, setError] = useState('');
+  const autoRefreshRan = useRef(false);
+
+  function fmtTimestamp() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  }
 
   useEffect(() => {
+    if (autoRefreshRan.current) return;
+    autoRefreshRan.current = true;
+
     Promise.all([fetchMetrics(), fetchCommentary()])
-      .then(([m, c]) => { setMetrics(m); setCommentary(c); })
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
+      .then(async ([m, c]) => {
+        setMetrics(m);
+        setCommentary(c);
+        setLoading(false);
+        // Auto-refresh commentary only if data file is newer than last regeneration
+        const status = await checkDataStatus();
+        if (status.needs_refresh) {
+          setRefreshing(true);
+          setRefreshMsg('New data detected — updating commentary…');
+          try {
+            const result = await refreshData();
+            setMetrics(result.metrics);
+            setCommentary(result.commentary);
+            if (result.errors.length > 0) console.error('[Dashboard] Auto-refresh errors:', result.errors);
+            setRefreshMsg(`Auto-updated ${fmtTimestamp()}`);
+          } catch {
+            setRefreshMsg('');
+          } finally {
+            setRefreshing(false);
+          }
+        }
+      })
+      .catch((e) => { setError(e.message); setLoading(false); });
   }, []);
 
   const handleSave = useCallback(async (sectionId: string, content: string) => {
@@ -50,7 +79,7 @@ export default function App() {
       setMetrics(result.metrics);
       setCommentary(result.commentary);
       const now = new Date();
-      const timestamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      const timestamp = fmtTimestamp();
       if (result.errors.length > 0) {
         console.error('AI regeneration errors:', result.errors);
       }

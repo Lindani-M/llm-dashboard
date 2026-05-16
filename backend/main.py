@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timezone
 from fastapi import FastAPI, HTTPException, Body, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -27,6 +28,44 @@ app.add_middleware(
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error("Unhandled error on %s %s: %s", request.method, request.url.path, exc, exc_info=True)
     return JSONResponse(status_code=500, content={"error": "An internal error occurred. Please try again."})
+
+
+@app.get("/api/data-status")
+def data_status():
+    """Check whether the data source is newer than the last AI regeneration."""
+    try:
+        from metrics import get_excel_mtime
+        excel_mtime = get_excel_mtime()
+        store = c.load_store()
+        # Find the oldest last_data_refresh among AI-generated sections
+        ai_sections = [
+            v["last_data_refresh"]
+            for k, v in store.items()
+            if k not in c._STATIC_SECTIONS
+            and not v.get("is_user_override_active")
+            and v.get("last_data_refresh")
+        ]
+        if not ai_sections:
+            return {"needs_refresh": True, "reason": "No refresh recorded yet"}
+        oldest_refresh = min(
+            datetime.fromisoformat(ts) for ts in ai_sections
+        )
+        # Ensure both are offset-aware for comparison
+        if oldest_refresh.tzinfo is None:
+            oldest_refresh = oldest_refresh.replace(tzinfo=timezone.utc)
+        needs = excel_mtime > oldest_refresh
+        logger.info(
+            "Data status check — Excel mtime: %s, last refresh: %s, needs_refresh: %s",
+            excel_mtime.isoformat(), oldest_refresh.isoformat(), needs
+        )
+        return {
+            "needs_refresh": needs,
+            "excel_modified_at": excel_mtime.isoformat(),
+            "last_commentary_refresh": oldest_refresh.isoformat(),
+        }
+    except Exception as e:
+        logger.error("data-status check failed: %s", e, exc_info=True)
+        return {"needs_refresh": False, "reason": "Status check unavailable"}
 
 
 @app.get("/api/health")

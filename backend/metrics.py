@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -8,6 +9,12 @@ def get_excel_path() -> Path:
     if env_path:
         return Path(env_path)
     return Path(__file__).parent.parent / "Bank_Churn.xlsx"
+
+
+def get_excel_mtime() -> datetime:
+    """Return the Excel file's last-modified time as a UTC-aware datetime."""
+    mtime = get_excel_path().stat().st_mtime
+    return datetime.fromtimestamp(mtime, tz=timezone.utc)
 
 
 def compute_metrics() -> dict:

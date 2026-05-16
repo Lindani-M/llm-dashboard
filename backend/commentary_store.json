@@ -1,86 +1,86 @@
 {
   "executive_summary": {
-    "ai_generated_content": "The bank is currently facing a significant retention challenge, with <strong>2,037 out of 10,000 customers</strong> having churned, representing an overall churn rate of <strong>20.4%</strong> \u2014 a figure driven particularly by Germany, where churn reaches <strong>32.4%</strong>, nearly double the rates seen in France (<strong>16.2%</strong>) and Spain (<strong>16.7%</strong>), and by female customers, who churn at <strong>25.1%</strong> compared to just <strong>16.5%</strong> among male customers. Product over-exposure presents a critical risk, with customers holding <strong>3 products churning at 82.7%</strong> and those with <strong>4 products churning at 100.0%</strong>, suggesting that high product penetration is paradoxically associated with dissatisfaction rather than loyalty. Engagement levels also prove decisive, as inactive members churn at <strong>26.9%</strong> versus <strong>14.3%</strong> for active members, and the average balance of a churned customer stands at <strong>$91,109</strong>, highlighting the substantial financial value at risk with every customer lost.",
+    "ai_generated_content": "The bank is currently facing a significant retention challenge, with <strong>973 customers lost out of a total of 4,625</strong>, representing an overall churn rate of <strong>21.0%</strong> that demands immediate executive attention. Geographic and demographic disparities are stark, as Germany's churn rate of <strong>31.7%</strong> is nearly double that of France (<strong>17.5%</strong>) and Spain (<strong>17.2%</strong>), while female customers are churning at <strong>25.8%</strong> compared to just <strong>16.9%</strong> for male customers, suggesting targeted intervention strategies are needed across both dimensions. Product over-exposure and inactivity are clear churn accelerators, with customers holding <strong>3 products churning at 84.3%</strong> and those with <strong>4 products at a striking 100.0%</strong>, and inactive members departing at a rate of <strong>28.3%</strong> versus <strong>14.1%</strong> for active members \u2014 with churned customers carrying an average balance of <strong>$89,011</strong>, the financial impact of inaction is substantial.",
     "user_overridden_content": null,
     "is_user_override_active": false,
-    "last_data_refresh": "2026-05-16T13:26:21.066135+00:00",
+    "last_data_refresh": "2026-05-16T14:13:28.962639+00:00",
     "last_override_at": null
   },
   "geography_insight": {
-    "ai_generated_content": "Germany is a critical churn hotspot, representing just <strong>25%</strong> of the total customer portfolio yet accounting for <strong>40%</strong> of all churned customers, with a churn rate of <strong>32.4%</strong> \u2014 nearly double that of France (<strong>16.2%</strong>) and Spain (<strong>16.7%</strong>).",
+    "ai_generated_content": "Germany is a critical retention risk, representing just <strong>25%</strong> of the total customer portfolio yet accounting for <strong>38%</strong> of all churned customers, with a churn rate of <strong>31.7%</strong> \u2014 nearly double that of France (<strong>17.5%</strong>) and Spain (<strong>17.2%</strong>).",
     "user_overridden_content": "Test manual edit \u2014 Germany crisis confirmed by ops team.",
     "is_user_override_active": false,
-    "last_data_refresh": "2026-05-16T13:26:21.066135+00:00",
+    "last_data_refresh": "2026-05-16T14:13:28.962639+00:00",
     "last_override_at": "2026-05-16T09:15:38.299000+00:00"
   },
   "age_insight": {
-    "ai_generated_content": "Customers aged <strong>50\u201359</strong> represent the highest churn risk in the portfolio, with a striking churn rate of <strong>56.0%</strong> \u2014 more than five times that of the youngest cohort. Churn rises sharply from <strong>10.9%</strong> in the 30\u201339 age group to a peak of <strong>56.0%</strong> in the 50\u201359 bracket before moderating to <strong>27.9%</strong> among customers aged 60 and above.",
+    "ai_generated_content": "Customers aged <strong>50\u201359</strong> represent the highest churn risk across all age groups, with a striking churn rate of <strong>56.3%</strong> \u2014 more than double that of any other segment. Churn rises sharply from <strong>7.4%</strong> among the youngest customers (18\u201329) through to its peak in the 50\u201359 bracket before easing to <strong>28.3%</strong> among those aged 60 and above, suggesting mid-to-late career customers require targeted retention strategies.",
     "user_overridden_content": null,
     "is_user_override_active": false,
-    "last_data_refresh": "2026-05-16T13:26:21.066135+00:00",
+    "last_data_refresh": "2026-05-16T14:13:28.962639+00:00",
     "last_override_at": null
   },
   "inactive_members_body": {
-    "ai_generated_content": "Inactive members represent a critical churn vulnerability, with <strong>4,849 customers</strong> churning at a rate of <strong>26.9%</strong> \u2014 resulting in <strong>1,302 lost customers</strong> from this segment alone. This churn rate is <strong>1.9x higher</strong> than the <strong>14.3%</strong> seen among active members, signalling that disengagement is a strong leading indicator of attrition risk.",
+    "ai_generated_content": "Inactive members represent <strong>2,260 customers</strong> with a churn rate of <strong>28.3%</strong>, meaning <strong>639</strong> have already exited \u2014 a significant concentration of attrition risk within this segment. At <strong>2.0x</strong> the active member churn rate of <strong>14.1%</strong>, inactivity remains one of the strongest behavioural signals of impending churn and warrants targeted re-engagement intervention.",
     "user_overridden_content": null,
     "is_user_override_active": false,
-    "last_data_refresh": "2026-05-16T13:26:21.066135+00:00",
+    "last_data_refresh": "2026-05-16T14:13:28.962639+00:00",
     "last_override_at": null
   },
   "multi_product_body": {
-    "ai_generated_content": "Customers holding <strong>3 or 4 products</strong> exhibit dramatically higher churn rates of <strong>82.7%</strong> and <strong>100.0%</strong> respectively, defying the conventional wisdom that deeper product penetration drives loyalty. In contrast, customers with <strong>2 products</strong> represent the retention sweet spot at just <strong>7.6%</strong> churn, suggesting that beyond a certain product threshold, over-exposure or misaligned offerings actively accelerate customer departure.",
+    "ai_generated_content": "Customers holding <strong>3 or 4 products</strong> present a striking paradox, with churn rates of <strong>84.3%</strong> and <strong>100.0%</strong> respectively \u2014 far exceeding the <strong>28.8%</strong> seen among single-product holders. Rather than deeper loyalty, higher product counts appear to signal disengagement or mis-selling, suggesting that relationship breadth alone is not a reliable retention indicator.",
     "user_overridden_content": null,
     "is_user_override_active": false,
-    "last_data_refresh": "2026-05-16T13:26:21.066135+00:00",
+    "last_data_refresh": "2026-05-16T14:13:28.962639+00:00",
     "last_override_at": null
   },
   "female_customers_body": {
-    "ai_generated_content": "Female customers churn at a rate of <strong>25.1%</strong>, compared to just <strong>16.5%</strong> among male customers \u2014 a gap of <strong>8.6 percentage points</strong> that signals a meaningful retention risk within this segment. Women are <strong>1.5 times more likely</strong> to churn than their male counterparts, representing <strong>1,139 lost customers</strong> and warranting urgent investigation into the drivers of female dissatisfaction.",
+    "ai_generated_content": "Female customers are churning at a rate of <strong>25.8%</strong> compared to just <strong>16.9%</strong> for male customers, representing a gap of nearly <strong>9 percentage points</strong>. This means female customers are <strong>1.5 times</strong> more likely to churn, with <strong>555</strong> lost from a base of <strong>2,149</strong>, making gender a critical segmentation variable for targeted retention strategies.",
     "user_overridden_content": null,
     "is_user_override_active": false,
-    "last_data_refresh": "2026-05-16T13:26:21.066135+00:00",
+    "last_data_refresh": "2026-05-16T14:13:28.962639+00:00",
     "last_override_at": null
   },
   "germany_body": {
-    "ai_generated_content": "Germany presents a significant churn risk, with <strong>814 customers lost</strong> representing a churn rate of <strong>32.4%</strong> \u2014 nearly double the rates seen in comparable markets. This stark divergence from France's <strong>16.2%</strong> and Spain's <strong>16.7%</strong> signals a country-specific issue that warrants immediate strategic attention.",
+    "ai_generated_content": "Germany presents a significant churn risk, with <strong>372 customers lost</strong> representing a churn rate of <strong>31.7%</strong> \u2014 nearly double the rate seen in comparable markets. This deviation demands urgent attention, as Germany's attrition runs <strong>14+ percentage points</strong> above both France (<strong>17.5%</strong>) and Spain (<strong>17.2%</strong>).",
     "user_overridden_content": null,
     "is_user_override_active": false,
-    "last_data_refresh": "2026-05-16T13:26:21.066135+00:00",
+    "last_data_refresh": "2026-05-16T14:13:28.962639+00:00",
     "last_override_at": null
   },
   "products_insight": {
-    "ai_generated_content": "Customers with 2 products show the lowest churn rate at just <strong>7.6%</strong>, yet this loyalty paradox inverts sharply beyond that point, with 3-product holders churning at <strong>82.7%</strong> and 4-product holders leaving at a striking <strong>100.0%</strong>, suggesting over-penetration drives disengagement rather than retention.",
+    "ai_generated_content": "Customers holding <strong>2 products</strong> demonstrate the strongest loyalty with a churn rate of just <strong>7.5%</strong>, yet this engagement effect reverses sharply beyond that point, with <strong>3-product</strong> holders churning at <strong>84.3%</strong> and <strong>4-product</strong> holders departing at a striking <strong>100.0%</strong>, suggesting that over-bundling drives customers away rather than deepening retention.",
     "user_overridden_content": null,
     "is_user_override_active": false,
-    "last_data_refresh": "2026-05-16T13:26:21.066135+00:00",
+    "last_data_refresh": "2026-05-16T14:13:28.962639+00:00",
     "last_override_at": null
   },
   "credit_score_insight": {
-    "ai_generated_content": "Customers with a credit score below 500 churn at <strong>23.7%</strong>, notably higher than the <strong>19.5%</strong> rate seen among those scoring 800 or above, suggesting that lower creditworthiness is associated with a moderately elevated attrition risk across a relatively narrow overall range of <strong>4.2 percentage points</strong>.",
+    "ai_generated_content": "Customers with a credit score below 500 churn at a notably higher rate of <strong>25.8%</strong>, compared to a narrow band of <strong>20.3%\u201321.1%</strong> across all other credit score segments, suggesting poor credit health is a meaningful early indicator of attrition risk.",
     "user_overridden_content": null,
     "is_user_override_active": false,
-    "last_data_refresh": "2026-05-16T13:26:21.066135+00:00",
+    "last_data_refresh": "2026-05-16T14:13:28.962639+00:00",
     "last_override_at": null
   },
   "activity_balance_insight": {
-    "ai_generated_content": "Customers who hold a balance churn at a rate of <strong>24.1%</strong> \u2014 nearly double the <strong>13.8%</strong> seen among zero-balance customers \u2014 representing a significantly elevated revenue risk. With churned customers carrying an average balance of <strong>$91,109</strong> compared to just <strong>$72,745</strong> for retained customers, the bank is disproportionately losing its highest-value depositors.",
+    "ai_generated_content": "Customers who hold a balance churn at a significantly higher rate of <strong>24.1%</strong> compared to <strong>15.4%</strong> for zero-balance customers, meaning the bank faces disproportionate risk among its most financially engaged clients. With churned customers carrying an average balance of <strong>$89,011</strong> versus <strong>$74,014</strong> for retained customers, each lost balance-holding relationship represents a <strong>~$15,000</strong> deeper capital exposure than the typical active account.",
     "user_overridden_content": null,
     "is_user_override_active": false,
-    "last_data_refresh": "2026-05-16T13:26:21.066135+00:00",
+    "last_data_refresh": "2026-05-16T14:13:28.962639+00:00",
     "last_override_at": null
   },
   "tenure_insight": {
-    "ai_generated_content": "Tenure offers virtually no protection against churn, with rates remaining stubbornly elevated across all years \u2014 ranging only from <strong>17.2%</strong> to <strong>23.0%</strong> \u2014 indicating that even decade-long customers churn at rates comparable to those in their first year.",
+    "ai_generated_content": "Tenure offers virtually no protection against churn, with rates remaining stubbornly elevated across all years \u2014 ranging only from <strong>16.8%</strong> to <strong>22.9%</strong> \u2014 indicating that even long-standing customers of <strong>9\u201310 years</strong> churn at rates comparable to those in their first year.",
     "user_overridden_content": null,
     "is_user_override_active": false,
-    "last_data_refresh": "2026-05-16T13:26:21.066135+00:00",
+    "last_data_refresh": "2026-05-16T14:13:28.962639+00:00",
     "last_override_at": null
   },
   "strategic_recommendations": {
-    "ai_generated_content": "1. Launch an emergency retention programme targeting Germany, where churn has reached a critical <strong>32.4%</strong>, deploying dedicated relationship managers and localised incentives before further revenue erosion occurs.\n\n2. Aggressively migrate single-product customers toward the two-product sweet spot, where churn collapses to just <strong>7.6%</strong>, while immediately auditing why customers holding three or more products churn at a catastrophic <strong>82.7%+</strong>.\n\n3. Introduce a proactive re-engagement campaign for inactive members, who churn at <strong>26.9%</strong>, using personalised outreach, fee waivers, and product recommendations triggered at the first sign of disengagement.\n\n4. Develop a gender-sensitive retention strategy to close the <strong>8.6 percentage point</strong> churn gap between female (<strong>25.1%</strong>) and male (<strong>16.5%</strong>) customers, investigating whether service gaps, product fit, or communication styles are driving the disparity.\n\n5. Prioritise high-balance customers carrying an average of <strong>$91,109</strong> for white-glove retention outreach, as their departure represents disproportionate revenue loss well beyond what headline churn figures of <strong>20.4%</strong> alone suggest.",
+    "ai_generated_content": "1. Launch an immediate intervention programme targeting Germany's <strong>31.7% churn rate</strong>, deploying dedicated retention specialists and localised loyalty incentives before the crisis spreads further across the European portfolio.\n\n2. Restructure the product bundling strategy urgently \u2014 cap aggressive cross-selling efforts and introduce guided advisory checkpoints before any customer reaches a <strong>3-product threshold</strong>, given the catastrophic <strong>84.3%+ churn rate</strong> at that level.\n\n3. Convert the <strong>28.3% of inactive members</strong> through a targeted re-engagement campaign combining personalised outreach, fee waivers, and digital onboarding nudges designed to drive meaningful product interaction within 90 days.\n\n4. Develop a gender-specific retention playbook to close the <strong>8.9 percentage point churn gap</strong> between female (<strong>25.8%</strong>) and male (<strong>16.9%</strong>) customers, prioritising tailored financial wellness products and advisory services proven to resonate with female banking segments.\n\n5. Deploy a high-value early-warning alert system for customers carrying average balances near <strong>$89,011</strong>, ensuring relationship managers make proactive contact before churn intent solidifies and the bank loses its most financially significant accounts.",
     "user_overridden_content": null,
     "is_user_override_active": false,
-    "last_data_refresh": "2026-05-16T13:26:21.066135+00:00",
+    "last_data_refresh": "2026-05-16T14:13:28.962639+00:00",
     "last_override_at": null
   },
   "section_subtitle": {

@@ -64,6 +64,16 @@ export async function revertCommentary(
   return res.json();
 }
 
+export async function checkDataStatus(): Promise<{ needs_refresh: boolean }> {
+  try {
+    const res = await fetch(`${BASE}/data-status`);
+    if (!res.ok) return { needs_refresh: false };
+    return res.json();
+  } catch {
+    return { needs_refresh: false };
+  }
+}
+
 export async function refreshData(): Promise<{
   commentary: Commentary;
   metrics: Metrics;
