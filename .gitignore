@@ -37,9 +37,6 @@ env/
 *.log
 logs/
 
-# Docker
-Dockerfile
-.dockerignore
 
 /node_modules/
 /dist/
@@ -48,6 +45,9 @@ dist/
 
 # Frontend build output copied into backend at deploy time — not committed
 backend/static/
+
+# Python packages pre-installed by CI for deployment
+backend/.python_packages/
 
 # Deployment artefact
 deploy.zip

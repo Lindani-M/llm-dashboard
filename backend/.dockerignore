@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.python_packages/
+commentary_store.json
+.env
+*.md

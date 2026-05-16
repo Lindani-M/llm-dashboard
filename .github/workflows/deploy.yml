@@ -10,6 +10,14 @@ env:
   RG: ai-rg
   AZURE_SUBSCRIPTION_ID: 6421aba4-c9b5-4354-bf2a-ef86b1623d21
   PYTHON_VERSION: '3.11'
+  # Populated at runtime via $GITHUB_ENV — declared here to satisfy the linter
+  STORAGE_ACCOUNT: ''
+  STORAGE_CONN: ''
+  ACR_NAME: ''
+  ACR_URL: ''
+  ACR_USER: ''
+  ACR_PASS: ''
+  IMAGE: ''
 
 jobs:
   provision-and-deploy:
@@ -83,21 +91,41 @@ jobs:
               --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
               --resource-group "${{ env.RG }}" \
               --plan "${{ secrets.AZURE_WEBAPP_NAME }}-plan" \
-              --runtime "PYTHON|3.11" \
+              --deployment-container-image-name "mcr.microsoft.com/appsvc/staticsite:latest" \
               --output none
           fi
 
-      # ── 4. Configure App Service settings ────────────────────────────────
+      # ── 4. Create ACR (idempotent) ────────────────────────────────────────
+      - name: Create Container Registry
+        run: |
+          ACR=$(echo "${{ secrets.AZURE_WEBAPP_NAME }}" \
+            | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]' | cut -c1-20)acr
+          echo "ACR_NAME=$ACR" >> $GITHUB_ENV
+          az acr create \
+            --name "$ACR" \
+            --resource-group "${{ env.RG }}" \
+            --sku Basic \
+            --admin-enabled true \
+            --output none
+
+      - name: Get ACR credentials
+        run: |
+          ACR_URL="${{ env.ACR_NAME }}.azurecr.io"
+          ACR_USER=$(az acr credential show --name "${{ env.ACR_NAME }}" --query username -o tsv)
+          ACR_PASS=$(az acr credential show --name "${{ env.ACR_NAME }}" --query "passwords[0].value" -o tsv)
+          echo "::add-mask::$ACR_PASS"
+          echo "ACR_URL=$ACR_URL"   >> $GITHUB_ENV
+          echo "ACR_USER=$ACR_USER" >> $GITHUB_ENV
+          echo "ACR_PASS=$ACR_PASS" >> $GITHUB_ENV
+
+      # ── 5. Configure App Service settings ────────────────────────────────
       - name: Configure App Service settings
         run: |
           az webapp config appsettings set \
             --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
             --resource-group "${{ env.RG }}" \
             --settings \
-              SCM_DO_BUILD_DURING_DEPLOYMENT=false \
-              ENABLE_ORYX_BUILD=false \
               WEBSITES_PORT=8000 \
-              PYTHONPATH="/home/site/wwwroot/.python_packages/lib/site-packages" \
               SP_TENANT_ID="${{ secrets.SP_TENANT_ID }}" \
               SP_CLIENT_ID="${{ secrets.SP_CLIENT_ID }}" \
               SP_CLIENT_SECRET="${{ secrets.SP_CLIENT_SECRET }}" \
@@ -109,15 +137,7 @@ jobs:
               AZURE_STORAGE_CONTAINER="commentary" \
             --output none
 
-      - name: Set startup command
-        run: |
-          az webapp config set \
-            --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
-            --resource-group "${{ env.RG }}" \
-            --startup-file "python -m uvicorn main:app --host 0.0.0.0 --port 8000" \
-            --output none
-
-      # ── 5. Build React frontend ───────────────────────────────────────────
+      # ── 6. Build React frontend ───────────────────────────────────────────
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -134,32 +154,32 @@ jobs:
           rm -rf backend/static
           cp -r frontend/dist backend/static
 
-      # ── 6. Package & Deploy ───────────────────────────────────────────────
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+      # ── 7. Build & push Docker image ─────────────────────────────────────
+      - name: Log in to ACR
+        run: echo "${{ env.ACR_PASS }}" | docker login "${{ env.ACR_URL }}" -u "${{ env.ACR_USER }}" --password-stdin
 
-      - name: Pre-install packages into bundle
+      - name: Build and push image
         run: |
-          pip install -r backend/requirements.txt \
-            --target backend/.python_packages/lib/site-packages \
-            --no-cache-dir \
-            --quiet
+          IMAGE="${{ env.ACR_URL }}/${{ secrets.AZURE_WEBAPP_NAME }}:${{ github.sha }}"
+          docker build -t "$IMAGE" backend/
+          docker push "$IMAGE"
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
 
-      - name: Create deployment zip
+      # ── 8. Deploy container to App Service ───────────────────────────────
+      - name: Configure App Service to use container
         run: |
-          cd backend
-          zip -r ../deploy.zip . \
-            --exclude "*.pyc" \
-            --exclude "*__pycache__*" \
-            --exclude ".venv/*"
-
-      - name: Deploy to Azure App Service
-        run: |
-          az webapp deploy \
+          az webapp config container set \
             --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
             --resource-group "${{ env.RG }}" \
-            --src-path deploy.zip \
-            --type zip \
-            --async true
+            --container-image-name "${{ env.IMAGE }}" \
+            --container-registry-url "https://${{ env.ACR_URL }}" \
+            --container-registry-user "${{ env.ACR_USER }}" \
+            --container-registry-password "${{ env.ACR_PASS }}" \
+            --output none
+
+      - name: Restart App Service
+        run: |
+          az webapp restart \
+            --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
+            --resource-group "${{ env.RG }}" \
+            --output none
