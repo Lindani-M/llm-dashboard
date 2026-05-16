@@ -1,0 +1,121 @@
+{
+  "executive_summary": {
+    "ai_generated_content": "The overall churn rate stands at <strong>20.4%</strong> (2,037 of 10,000 customers). Germany shows a disproportionately high churn rate of <strong>32.4%</strong>, nearly double that of France (16.2%) and Spain (16.7%). Female customers churn at <strong>25.1%</strong> vs. 16.5% for males, and customers with 3+ products churn at <strong>82.7\u2013100%</strong> \u2014 suggesting a cross-sell strategy that may be backfiring. Churned customers carry <strong>25% higher balances</strong> on average ($91K vs $73K), representing significant revenue at risk.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T09:15:22.165393+00:00",
+    "last_override_at": null
+  },
+  "geography_insight": {
+    "ai_generated_content": "<strong>Key insight:</strong> Germany accounts for 25% of total customers but <strong>40% of all churn</strong>. Regional service quality or competitive dynamics warrant urgent investigation.",
+    "user_overridden_content": "Test manual edit \u2014 Germany crisis confirmed by ops team.",
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T09:15:22.165414+00:00",
+    "last_override_at": "2026-05-16T09:15:38.299000+00:00"
+  },
+  "age_insight": {
+    "ai_generated_content": "<strong>Critical finding:</strong> The 50\u201359 age band has a <strong>56% churn rate</strong> \u2014 the highest-risk segment. These are likely high-value clients approaching wealth transition. The 40\u201349 band (30.8%) is an early-warning zone.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T09:15:22.165424+00:00",
+    "last_override_at": null
+  },
+  "inactive_members_body": {
+    "ai_generated_content": "Inactive members churn at nearly double the rate of active members. This segment represents the single largest addressable risk pool \u2014 re-engagement campaigns could prevent an estimated 600+ departures annually.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T09:15:22.165432+00:00",
+    "last_override_at": null
+  },
+  "multi_product_body": {
+    "ai_generated_content": "Customers holding 3 or more products churn at 82.7\u2013100%, a counter-intuitive finding that suggests complexity or fee fatigue. All 60 customers with 4 products exited. Cross-sell strategies must be re-evaluated \u2014 quantity is eroding loyalty, not reinforcing it.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T09:15:22.165434+00:00",
+    "last_override_at": null
+  },
+  "female_customers_body": {
+    "ai_generated_content": "Female customers churn at 25.1% compared to 16.5% for males \u2014 a 52% higher rate. With 4,543 female customers in the portfolio, this segment alone accounts for 1,139 exits. Investigating whether product offerings, advisory quality, or service gaps drive this disparity is critical.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T09:15:22.165437+00:00",
+    "last_override_at": null
+  },
+  "germany_body": {
+    "ai_generated_content": "Germany's churn rate is double that of France and Spain despite having a comparable customer base (2,509). With 814 departures, it accounts for 40% of all churn. This geographic concentration of attrition suggests systemic issues \u2014 potentially competitive pressure, pricing, or service model misalignment.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T09:15:22.165439+00:00",
+    "last_override_at": null
+  },
+  "products_insight": {
+    "ai_generated_content": "<strong>Paradox alert:</strong> 2-product customers are the sweet spot at just <strong>7.6%</strong> churn. Beyond 2, every additional product dramatically increases exit probability. The cross-sell playbook needs a ceiling.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T09:15:22.165443+00:00",
+    "last_override_at": null
+  },
+  "credit_score_insight": {
+    "ai_generated_content": "<strong>Observation:</strong> Credit score shows minimal correlation with churn \u2014 rates are relatively flat across bands (19.5%\u201323.7%). Churn is driven by <strong>engagement and product factors</strong>, not creditworthiness.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T09:15:22.165445+00:00",
+    "last_override_at": null
+  },
+  "activity_balance_insight": {
+    "ai_generated_content": "<strong>Revenue risk:</strong> Customers with non-zero balances churn at <strong>24.1%</strong> \u2014 nearly double zero-balance customers. Avg churned balance is <strong>$91K</strong>, meaning each departure carries significant revenue implications.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T09:15:22.165447+00:00",
+    "last_override_at": null
+  },
+  "tenure_insight": {
+    "ai_generated_content": "<strong>Observation:</strong> Tenure shows <strong>no meaningful protective effect</strong> against churn. Rates hover between 17\u201323% regardless of years with the bank. Loyalty programmes tied to tenure alone will not move the needle \u2014 the root causes lie elsewhere.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T09:15:22.165449+00:00",
+    "last_override_at": null
+  },
+  "strategic_recommendations": {
+    "ai_generated_content": "<strong>Immediate priorities:</strong> (1) Investigate and address the <strong>Germany churn crisis</strong> \u2014 814 departures at 32.4% demand a regional intervention. (2) <strong>Cap cross-sell at 2 products</strong> \u2014 the data unequivocally shows that 3+ products accelerate churn. (3) Launch targeted <strong>re-engagement campaigns for inactive members</strong>, prioritising the 40\u201359 age band where churn peaks at 30\u201356%. (4) Address the <strong>gender gap</strong> in retention: female churn at 25.1% vs. 16.5% male warrants service experience analysis. (5) Protect <strong>high-balance customers</strong> \u2014 churned customers carry $91K average balances representing disproportionate revenue loss per departure.",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T09:15:22.165458+00:00",
+    "last_override_at": null
+  },
+  "section_subtitle": {
+    "ai_generated_content": "Comprehensive analysis of customer attrition across demographics, products, and engagement. Based on 10,000 customer records.",
+    "user_overridden_content": "Comprehensive dashboard of customer attrition across demographics, products, and engagement. Based on 10,000 customer records.",
+    "is_user_override_active": true,
+    "last_data_refresh": "2026-05-16T10:01:48.262437+00:00",
+    "last_override_at": "2026-05-16T10:05:44.670014+00:00"
+  },
+  "grantee_title_inactive": {
+    "ai_generated_content": "Inactive Members",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:01:48.262458+00:00",
+    "last_override_at": null
+  },
+  "grantee_title_multiproduct": {
+    "ai_generated_content": "Multi-Product Holders (3+)",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:01:48.262465+00:00",
+    "last_override_at": null
+  },
+  "grantee_title_female": {
+    "ai_generated_content": "Female Customers",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:01:48.262467+00:00",
+    "last_override_at": null
+  },
+  "grantee_title_germany": {
+    "ai_generated_content": "Germany Region",
+    "user_overridden_content": null,
+    "is_user_override_active": false,
+    "last_data_refresh": "2026-05-16T10:01:48.262470+00:00",
+    "last_override_at": null
+  }
+}
